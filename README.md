@@ -1,8 +1,9 @@
 # Icon
 
-Script to generate my icon
+My personal icons. Generated files are stored in `dest/`.
 
-```bash
-$ poetry install
-$ poetry run src/main.py
+## Generate
+
+```sh
+nix run
 ```

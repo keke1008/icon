@@ -1,10 +1,25 @@
 #!/usr/bin/env python
 
-from math import log2
-from typing import TypeAlias
+import math
+import sys
+from dataclasses import dataclass
+
 from PIL import Image, ImageDraw
 
-Color: TypeAlias = tuple[int, int, int] | tuple[int, int, int, int]
+type Color = str | tuple[int, int, int, int]
+
+
+@dataclass(frozen=True)
+class IconColor:
+    outer: Color
+    inner: Color
+
+
+COLORS = {
+    "green": IconColor(outer="#44B575", inner="#60FFA5"),
+    "red": IconColor(outer="#BB3232", inner="#FF5656"),
+    "blue": IconColor(outer="#0076FF", inner="#00BFFF"),
+}
 
 
 def draw_square_centered(
@@ -21,14 +36,13 @@ def draw_square_centered(
     )
 
 
-def create_icon_image(size: int, inner: Color, outer: Color) -> Image.Image:
-    exp2 = log2(size)
-    assert exp2.is_integer()
-    assert exp2 >= log2(32)
+def create_icon_image(size: int, color: IconColor) -> Image.Image:
+    assert math.log2(size).is_integer()
+    assert size >= 32
 
-    image = Image.new("RGBA", (size, size), outer)
+    image = Image.new("RGBA", (size, size), color.outer)
     draw = ImageDraw.Draw(image)
-    scale = int(size / 32)
+    scale = size // 32
 
     draw_square_centered(
         image_draw=draw,
@@ -41,23 +55,20 @@ def create_icon_image(size: int, inner: Color, outer: Color) -> Image.Image:
         image_draw=draw,
         image_size=size,
         margin_width=8 * scale,
-        fill_color=inner,
+        fill_color=color.inner,
     )
 
     return image
 
 
 def main():
-    for size in [32, 64, 128, 256]:
-        icon_image = create_icon_image(
-            size=size,
-            inner=(96, 255, 165),
-            outer=(68, 181, 117),
-        )
-        for ext in ["ico", "png"]:
-            icon_image.save(f"dest/icon-{size}.{ext}", sizes=[(size, size)])
+    assert len(sys.argv) == 2
+    output_dir = sys.argv[1]
+    icon_size = 256
 
-    print("Done")
+    for name, color in COLORS.items():
+        icon = create_icon_image(size=icon_size, color=color)
+        icon.save(f"{output_dir}/icon-{name}-{icon_size}.png")
 
 
 if __name__ == "__main__":
