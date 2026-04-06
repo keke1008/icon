@@ -3,10 +3,13 @@
 import math
 import sys
 from dataclasses import dataclass
+from typing import Final
 
 from PIL import Image, ImageDraw
 
-type Color = str | tuple[int, int, int, int]
+type Color = str
+
+BACKGOUND_COLOR: Final[str] = "#101010"
 
 
 @dataclass(frozen=True)
@@ -16,8 +19,8 @@ class IconColor:
 
 
 COLORS = {
-    "green": IconColor(outer="#44B575", inner="#60FFA5"),
-    "red": IconColor(outer="#BB3232", inner="#FF5656"),
+    "green": IconColor(outer="#3fCB44", inner="#60FFA5"),
+    "red": IconColor(outer="#D8152F", inner="#FF6767"),
     "blue": IconColor(outer="#0076FF", inner="#00BFFF"),
 }
 
@@ -48,7 +51,7 @@ def create_icon_image(size: int, color: IconColor) -> Image.Image:
         image_draw=draw,
         image_size=size,
         margin_width=5 * scale,
-        fill_color=(0, 0, 0, 0),
+        fill_color=BACKGOUND_COLOR,
     )
 
     draw_square_centered(
