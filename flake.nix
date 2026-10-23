@@ -4,35 +4,49 @@
   outputs =
     { self, nixpkgs }:
     let
-      system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
-
-      python = pkgs.python3.withPackages (ps: [ ps.pillow ]);
-
-      icons = pkgs.runCommand "icons" { nativeBuildInputs = [ python ]; } ''
-        mkdir -p $out
-        python ${./src/main.py} $out
-      '';
-
+      eachSystem =
+        let
+          mkSystemArgs = system: pkgs: {
+            inherit system pkgs;
+            python = pkgs.python3.withPackages (ps: [ ps.pillow ]);
+          };
+          systemArgs = builtins.mapAttrs mkSystemArgs nixpkgs.legacyPackages;
+        in
+        f: builtins.mapAttrs (_: f) systemArgs;
     in
     {
-      packages.${system}.default = icons;
+      packages = eachSystem (
+        { pkgs, python, ... }: {
+          default = pkgs.runCommand "icons" { nativeBuildInputs = [ python ]; } ''
+            mkdir -p $out
+            python ${./src/main.py} $out
+          '';
+        }
+      );
 
-      apps.${system}.default = {
-        type = "app";
-        program = toString (
-          pkgs.writeShellScript "deploy" ''
-            cp -rL --no-preserve=mode ${icons}/. dest/
-          ''
-        );
-      };
+      apps = eachSystem (
+        { pkgs, system, ... }: {
+          default = {
+            type = "app";
+            program = toString (
+              pkgs.writeShellScript "deploy" ''
+                cp -rL --no-preserve=mode ${self.packages."${system}".default}/. dest/
+              ''
+            );
+          };
+        }
+      );
 
-      devShells.${system}.default = pkgs.mkShell {
-        packages = with pkgs; [
-          python
-          ruff
-          pyright
-        ];
-      };
+      devShells = eachSystem (
+        { pkgs, python, ... }: {
+          default = pkgs.mkShell {
+            packages = with pkgs; [
+              python
+              ruff
+              pyright
+            ];
+          };
+        }
+      );
     };
 }
