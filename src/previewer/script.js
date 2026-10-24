@@ -20,17 +20,32 @@ const [iconTemplate, presetColors] = await Promise.all([
 	fetchFile("../colors.json", (res) => res.json()).catch(() => ({})),
 ]);
 
+const areaColorVar = (area) => `--${area}-color`;
+
 // テンプレートの @area@ を CSS 変数に置き換えて埋め込み、以降は CSS 変数の更新だけで色を変える
 const iconAreas = new Set(
 	[...iconTemplate.matchAll(PLACEHOLDER_PATTERN)].map(([, area]) => area),
 );
-const iconSvg = iconTemplate.replace(PLACEHOLDER_PATTERN, "var(--$1-color)");
+const iconSvg = iconTemplate.replace(
+	PLACEHOLDER_PATTERN,
+	(_, area) => `var(${areaColorVar(area)})`,
+);
+
+const cloneTemplate = (id) =>
+	document.getElementById(id).content.firstElementChild.cloneNode(true);
 
 const iconPairTemplate = document.getElementById("icon-pair-template");
 iconPairTemplate.content.querySelectorAll(".preview-icon").forEach((icon) => {
 	icon.innerHTML = iconSvg;
 });
-const createIconPair = () => iconPairTemplate.content.cloneNode(true);
+const createIconPair = () => cloneTemplate("icon-pair-template");
+
+const createCaptionedIconPair = (caption) => {
+	const figure = cloneTemplate("captioned-icon-pair-template");
+	figure.querySelector("figcaption").textContent = caption;
+	figure.prepend(createIconPair());
+	return figure;
+};
 
 document.querySelectorAll(".preview-background").forEach((background) => {
 	background.append(createIconPair());
@@ -38,51 +53,44 @@ document.querySelectorAll(".preview-background").forEach((background) => {
 
 document.querySelectorAll(".size-preview").forEach((sizePreview) => {
 	PREVIEW_SIZES.forEach((size) => {
-		const item = document.createElement("figure");
-		item.className = "size-preview-item";
+		const item = createCaptionedIconPair(`${size}px`);
 		item.style.setProperty("--icon-size", `${size}px`);
-
-		const caption = document.createElement("figcaption");
-		caption.className = "preview-caption";
-		caption.textContent = `${size}px`;
-
-		item.append(createIconPair(), caption);
 		sizePreview.append(item);
 	});
 });
 
 // colors.json の色はスライダーとは別に、要素ごとに CSS 変数を上書きして表示する
 const colorPresets = document.querySelector(".color-presets");
-Object.values(presetColors).forEach((colors) => {
-	const pair = createIconPair().firstElementChild;
+Object.entries(presetColors).forEach(([name, colors]) => {
+	const item = createCaptionedIconPair(name);
 	Object.entries(colors).forEach(([area, color]) => {
-		pair.style.setProperty(`--${area}-color`, color);
+		item.style.setProperty(areaColorVar(area), color);
 	});
-	colorPresets.append(pair);
+	colorPresets.append(item);
 });
 
 const colorPickers = document.querySelector(".color-pickers");
-const colorPickerTemplate = document.getElementById("color-picker-template");
 
 iconAreas.forEach((area) => {
-	const fragment = colorPickerTemplate.content.cloneNode(true);
-	const colorPicker = fragment.querySelector("form");
-	fragment.querySelector(".color-picker-name").textContent = area;
+	const colorPicker = cloneTemplate("color-picker-template");
+	colorPicker.querySelector(".color-picker-name").textContent = area;
 
-	const { h, s, l, color: colorOutput } = colorPicker.elements;
+	const { elements } = colorPicker;
+	const sliders = [elements.h, elements.s, elements.l];
 
 	const update = () => {
+		const [h, s, l] = sliders.map((slider) => slider.value);
 		// colors.json にそのまま貼れるよう、resvg も解釈できるカンマ区切りの書式にする
-		const color = `hsl(${h.value}, ${s.value}%, ${l.value}%)`;
-		document.body.style.setProperty(`--${area}-color`, color);
+		const color = `hsl(${h}, ${s}%, ${l}%)`;
+		document.body.style.setProperty(areaColorVar(area), color);
 		colorPicker.style.setProperty("--color", color);
-		colorOutput.value = color;
-		[h, s, l].forEach((slider) => {
-			slider.nextElementSibling.value = slider.value;
+		elements.color.value = color;
+		sliders.forEach((slider) => {
+			elements[`${slider.name}-value`].value = slider.value;
 		});
 	};
 	colorPicker.addEventListener("input", update);
 	update();
 
-	colorPickers.append(fragment);
+	colorPickers.append(colorPicker);
 });

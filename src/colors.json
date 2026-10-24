@@ -1,6 +1,6 @@
 {
-  "green": { "outer": "#3FCB44", "inner": "#60FFA5" },
-  "red": { "outer": "#D8152F", "inner": "#FF6767" },
-  "blue": { "outer": "#0076FF", "inner": "#00BFFF" },
-  "violet": { "outer": "hsl(273, 95%, 47%)", "inner": "hsl(262, 74%, 64%)" }
+	"green": { "outer": "#3FCB44", "inner": "#60FFA5" },
+	"red": { "outer": "#D8152F", "inner": "#FF6767" },
+	"blue": { "outer": "#0076FF", "inner": "#00BFFF" },
+	"violet": { "outer": "hsl(273, 95%, 47%)", "inner": "hsl(262, 74%, 64%)" }
 }

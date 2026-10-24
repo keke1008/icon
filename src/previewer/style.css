@@ -3,19 +3,12 @@ body {
 	--panel-background-color: #333333;
 	--muted-text-color: #999999;
 
-	--icon-gap: 8px;
+	--space-s: 8px;
+	--space-m: 16px;
+	--space-l: 24px;
+	--border-radius: 8px;
 
-	--thumb-width: 10px;
-	--thumb-height: 1.5rem;
-	--thumb-border-width: 3px;
-
-	--track-width: calc(
-		100% -
-		var(--thumb-width) -
-		var(--thumb-border-width) *
-		2
-	);
-	--track-height: 1rem;
+	--icon-gap: var(--space-s);
 
 	margin: 0;
 	font-family: monospace;
@@ -25,12 +18,13 @@ body {
 }
 
 .layout {
-	--layout-padding: 24px;
+	--layout-padding: var(--space-l);
+	--control-column-width: 360px;
 
 	min-height: 100dvh;
 	box-sizing: border-box;
 	padding: var(--layout-padding);
-	gap: 24px;
+	gap: var(--space-l);
 
 	display: grid;
 	grid-template-columns: minmax(0, 1fr);
@@ -38,14 +32,14 @@ body {
 }
 
 .preview-column {
-	gap: 16px;
+	gap: var(--space-m);
 
 	display: flex;
 	flex-direction: column;
 }
 
 .previews {
-	gap: 16px;
+	gap: var(--space-m);
 
 	display: grid;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -64,10 +58,14 @@ body {
 	align-items: center;
 }
 
-/* 幅に余裕がある場合は 2 カラムにし、プレビュー列を画面の高さに収める */
+/*
+ * 幅に余裕がある場合は 2 カラムにし、プレビュー列を画面の高さに収める
+ * 801px は余白・gap・コントロール列 (--control-column-width) を除いても、プレビュー列に約 370px 残る幅
+ * (メディアクエリには CSS 変数を使えないため直接書いている)
+ */
 @media (min-width: 801px) {
 	.layout {
-		grid-template-columns: minmax(0, 1fr) 360px;
+		grid-template-columns: minmax(0, 1fr) var(--control-column-width);
 	}
 
 	.preview-column {
@@ -88,7 +86,7 @@ body {
 
 .preview-background,
 .size-preview {
-	border-radius: 8px;
+	border-radius: var(--border-radius);
 }
 
 .preview-light-mode {
@@ -127,24 +125,24 @@ body {
 }
 
 .size-previews {
-	gap: 16px;
+	gap: var(--space-m);
 
 	display: flex;
 	flex-direction: column;
 }
 
 .size-preview {
-	padding: 16px 24px;
-	gap: 16px;
+	padding: var(--space-m) var(--space-l);
+	gap: var(--space-m);
 
 	display: flex;
 	flex-wrap: wrap;
 	align-items: flex-end;
 }
 
-.size-preview-item {
+.captioned-icon-pair {
 	margin: 0;
-	gap: 8px;
+	gap: var(--space-s);
 
 	display: flex;
 	flex-direction: column;
@@ -153,7 +151,7 @@ body {
 
 .control-column,
 .color-pickers {
-	gap: 16px;
+	gap: var(--space-m);
 
 	display: flex;
 	flex-direction: column;
@@ -162,8 +160,8 @@ body {
 .color-presets {
 	--icon-size: 64px;
 
-	padding: 16px;
-	gap: 16px;
+	padding: var(--space-m);
+	gap: var(--space-m);
 
 	/* アイコン 2 つ分の列を幅いっぱいに均等に並べる */
 	display: grid;
@@ -176,17 +174,20 @@ body {
 
 .color-picker,
 .color-presets {
-	border-radius: 8px;
+	border-radius: var(--border-radius);
 	background-color: var(--panel-background-color);
 }
 
 .color-picker {
-	padding: 12px 16px 16px;
+	padding: 12px var(--space-m) var(--space-m);
+	gap: var(--space-s);
+
+	display: flex;
+	flex-direction: column;
 }
 
 .color-picker-title {
-	margin-bottom: 8px;
-	gap: 8px;
+	gap: var(--space-s);
 
 	display: flex;
 	align-items: center;
@@ -202,7 +203,7 @@ body {
 }
 
 .color-slider-row {
-	gap: 8px;
+	gap: var(--space-s);
 
 	display: grid;
 	grid-template-columns: 1.5ch minmax(0, 1fr) 3ch;
@@ -218,9 +219,17 @@ body {
 }
 
 .color-slider {
+	--thumb-width: 10px;
+	--thumb-height: 1.5rem;
+	--thumb-border-width: 3px;
+
+	/* つまみの中心がグラデーションの両端に来るよう、トラックの背景をつまみの幅だけ縮める */
+	--track-width: calc(100% - var(--thumb-width) - var(--thumb-border-width) * 2);
+	--track-height: 1rem;
+
 	width: 100%;
 	height: calc(var(--thumb-height) + var(--thumb-border-width) * 2);
-	margin: 5px 0;
+	margin: 0;
 	background-color: transparent;
 	appearance: none;
 }
@@ -283,8 +292,6 @@ body {
 }
 
 .color-picker-output {
-	display: block;
-	margin-top: 8px;
 	text-align: center;
 	color: var(--muted-text-color);
 }

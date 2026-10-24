@@ -1,62 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Icon previewer</title>
-        <link href="style.css" rel="stylesheet">
-    </head>
-    <body>
-        <main class="layout">
-            <div class="preview-column">
-                <section class="previews">
-                    <div class="preview-background preview-light-mode"></div>
-                    <div class="preview-background preview-dark-mode"></div>
-                </section>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Icon previewer</title>
+		<link href="style.css" rel="stylesheet">
+	</head>
+	<body>
+		<main class="layout">
+			<div class="preview-column">
+				<section class="previews">
+					<div class="preview-background preview-light-mode"></div>
+					<div class="preview-background preview-dark-mode"></div>
+				</section>
 
-                <section class="size-previews">
-                    <div class="size-preview preview-light-mode"></div>
-                    <div class="size-preview preview-dark-mode"></div>
-                </section>
-            </div>
+				<section class="size-previews">
+					<div class="size-preview preview-light-mode"></div>
+					<div class="size-preview preview-dark-mode"></div>
+				</section>
+			</div>
 
-            <div class="control-column">
-                <section class="color-pickers"></section>
-                <section class="color-presets"></section>
-            </div>
-        </main>
+			<div class="control-column">
+				<section class="color-pickers"></section>
+				<section class="color-presets"></section>
+			</div>
+		</main>
 
-        <template id="icon-pair-template">
-            <div class="icon-pair">
-                <div class="preview-icon"></div>
-                <div class="preview-icon preview-icon-round"></div>
-            </div>
-        </template>
+		<template id="icon-pair-template">
+			<div class="icon-pair">
+				<div class="preview-icon"></div>
+				<div class="preview-icon preview-icon-round"></div>
+			</div>
+		</template>
 
-        <template id="color-picker-template">
-            <form class="color-picker">
-                <div class="color-picker-title">
-                    <span class="color-swatch"></span><span class="color-picker-name"></span>
-                </div>
-                <label class="color-slider-row">
-                    <span class="color-slider-label">H</span>
-                    <input type="range" name="h" class="color-slider" min="0" max="359">
-                    <output class="color-slider-value"></output>
-                </label>
-                <label class="color-slider-row">
-                    <span class="color-slider-label">S</span>
-                    <input type="range" name="s" class="color-slider" min="0" max="100">
-                    <output class="color-slider-value"></output>
-                </label>
-                <label class="color-slider-row">
-                    <span class="color-slider-label">L</span>
-                    <input type="range" name="l" class="color-slider" min="0" max="100">
-                    <output class="color-slider-value"></output>
-                </label>
-                <output name="color" class="color-picker-output"></output>
-            </form>
-        </template>
+		<template id="captioned-icon-pair-template">
+			<figure class="captioned-icon-pair">
+				<figcaption class="preview-caption"></figcaption>
+			</figure>
+		</template>
 
-        <script type="module" src="script.js"></script>
-    </body>
+		<template id="color-picker-template">
+			<form class="color-picker">
+				<div class="color-picker-title">
+					<span class="color-swatch"></span>
+					<span class="color-picker-name"></span>
+				</div>
+				<label class="color-slider-row">
+					<span class="color-slider-label">H</span>
+					<input type="range" name="h" class="color-slider" min="0" max="359">
+					<output name="h-value" class="color-slider-value"></output>
+				</label>
+				<label class="color-slider-row">
+					<span class="color-slider-label">S</span>
+					<input type="range" name="s" class="color-slider" min="0" max="100">
+					<output name="s-value" class="color-slider-value"></output>
+				</label>
+				<label class="color-slider-row">
+					<span class="color-slider-label">L</span>
+					<input type="range" name="l" class="color-slider" min="0" max="100">
+					<output name="l-value" class="color-slider-value"></output>
+				</label>
+				<output name="color" class="color-picker-output"></output>
+			</form>
+		</template>
+
+		<script type="module" src="script.js"></script>
+	</body>
 </html>
