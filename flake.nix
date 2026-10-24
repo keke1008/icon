@@ -19,14 +19,8 @@
               $out/icon-${name}-${iconSize}.png
           '';
 
-          # previewer/ から ../icon.svg.in を参照するため、src/ と同じ配置で配信する
-          previewerRoot = lib.fileset.toSource {
-            root = ./src;
-            fileset = lib.fileset.unions [
-              ./src/previewer
-              ./src/icon.svg.in
-            ];
-          };
+          # previewer/ から src/ 直下のファイルを参照するため、src/ をそのまま配信する
+          previewerRoot = ./src;
           previewerPort = "8000";
         in
         {

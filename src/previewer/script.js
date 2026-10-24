@@ -1,7 +1,35 @@
 const PLACEHOLDER_PATTERN = /@(\w+)@/g;
 const PREVIEW_SIZES = [16, 24, 32, 48, 64, 128];
 
+const fetchFile = (path, parse) =>
+	fetch(path)
+		.then((res) => {
+			if (!res.ok) {
+				throw new Error(`${res.status} ${res.statusText}`);
+			}
+			return parse(res);
+		})
+		.catch((error) => {
+			alert(`Failed to load ${path}: ${error.message}`);
+			throw error;
+		});
+
+const [iconTemplate, presetColors] = await Promise.all([
+	fetchFile("../icon.svg.in", (res) => res.text()),
+	// colors.json が読めなくても、色一覧以外は使えるようにする
+	fetchFile("../colors.json", (res) => res.json()).catch(() => ({})),
+]);
+
+// テンプレートの @area@ を CSS 変数に置き換えて埋め込み、以降は CSS 変数の更新だけで色を変える
+const iconAreas = new Set(
+	[...iconTemplate.matchAll(PLACEHOLDER_PATTERN)].map(([, area]) => area),
+);
+const iconSvg = iconTemplate.replace(PLACEHOLDER_PATTERN, "var(--$1-color)");
+
 const iconPairTemplate = document.getElementById("icon-pair-template");
+iconPairTemplate.content.querySelectorAll(".preview-icon").forEach((icon) => {
+	icon.innerHTML = iconSvg;
+});
 const createIconPair = () => iconPairTemplate.content.cloneNode(true);
 
 document.querySelectorAll(".preview-background").forEach((background) => {
@@ -23,24 +51,14 @@ document.querySelectorAll(".size-preview").forEach((sizePreview) => {
 	});
 });
 
-// テンプレートの @area@ を CSS 変数に置き換えて埋め込み、以降は CSS 変数の更新だけで色を変える
-const iconTemplate = await fetch("../icon.svg.in")
-	.then((res) => {
-		if (!res.ok) {
-			throw new Error(`${res.status} ${res.statusText}`);
-		}
-		return res.text();
-	})
-	.catch((error) => {
-		alert(`Failed to load ../icon.svg.in: ${error.message}`);
-		throw error;
+// colors.json の色はスライダーとは別に、要素ごとに CSS 変数を上書きして表示する
+const colorPresets = document.querySelector(".color-presets");
+Object.values(presetColors).forEach((colors) => {
+	const pair = createIconPair().firstElementChild;
+	Object.entries(colors).forEach(([area, color]) => {
+		pair.style.setProperty(`--${area}-color`, color);
 	});
-const iconAreas = new Set(
-	[...iconTemplate.matchAll(PLACEHOLDER_PATTERN)].map(([, area]) => area),
-);
-const iconSvg = iconTemplate.replace(PLACEHOLDER_PATTERN, "var(--$1-color)");
-document.querySelectorAll(".preview-icon").forEach((icon) => {
-	icon.innerHTML = iconSvg;
+	colorPresets.append(pair);
 });
 
 const colorPickers = document.querySelector(".color-pickers");

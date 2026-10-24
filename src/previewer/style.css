@@ -3,6 +3,8 @@ body {
 	--panel-background-color: #333333;
 	--muted-text-color: #999999;
 
+	--icon-gap: 8px;
+
 	--thumb-width: 10px;
 	--thumb-height: 1.5rem;
 	--thumb-border-width: 3px;
@@ -52,7 +54,7 @@ body {
 .preview-background {
 	/* 四角と丸を横に並べ、2 つ分 + gap の幅が背景の 84% になるようにする */
 	--icon-gap: 8cqw;
-	--icon-width: min((84cqw - var(--icon-gap)) / 2, 50cqh);
+	--icon-size: min((84cqw - var(--icon-gap)) / 2, 50cqh);
 
 	aspect-ratio: 1 / 1;
 	container-type: size;
@@ -60,14 +62,6 @@ body {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-}
-
-.preview-background .icon-pair {
-	gap: var(--icon-gap);
-}
-
-.preview-background .preview-icon {
-	width: var(--icon-width);
 }
 
 /* 幅に余裕がある場合は 2 カラムにし、プレビュー列を画面の高さに収める */
@@ -111,8 +105,15 @@ body {
 	color: var(--muted-text-color);
 }
 
+/* サイズと間隔は各プレビューが --icon-size と --icon-gap で指定する */
 .icon-pair {
+	gap: var(--icon-gap);
+
 	display: flex;
+}
+
+.preview-icon {
+	width: var(--icon-size);
 }
 
 .preview-icon svg {
@@ -150,14 +151,7 @@ body {
 	align-items: center;
 }
 
-.size-preview-item .icon-pair {
-	gap: 8px;
-}
-
-.size-preview-item .preview-icon {
-	width: var(--icon-size);
-}
-
+.control-column,
 .color-pickers {
 	gap: 16px;
 
@@ -165,10 +159,29 @@ body {
 	flex-direction: column;
 }
 
-.color-picker {
-	padding: 12px 16px 16px;
+.color-presets {
+	--icon-size: 64px;
+
+	padding: 16px;
+	gap: 16px;
+
+	/* アイコン 2 つ分の列を幅いっぱいに均等に並べる */
+	display: grid;
+	grid-template-columns: repeat(
+		auto-fit,
+		minmax(calc(var(--icon-size) * 2 + var(--icon-gap)), 1fr)
+	);
+	justify-items: center;
+}
+
+.color-picker,
+.color-presets {
 	border-radius: 8px;
 	background-color: var(--panel-background-color);
+}
+
+.color-picker {
+	padding: 12px 16px 16px;
 }
 
 .color-picker-title {
