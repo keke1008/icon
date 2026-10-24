@@ -40,7 +40,7 @@
             runtimeInputs = [ pkgs.python3 ];
             text = ''
               echo "Previewer: http://localhost:${previewerPort}/previewer/"
-              python -m http.server ${previewerPort} -d ${previewerRoot}
+              python -m http.server ${previewerPort} --bind 127.0.0.1 -d ${previewerRoot}
             '';
           };
         }

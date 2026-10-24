@@ -1,7 +1,17 @@
 const PLACEHOLDER_PATTERN = /@(\w+)@/g;
 
 // テンプレートの @area@ を CSS 変数に置き換えて埋め込み、以降は CSS 変数の更新だけで色を変える
-const iconTemplate = await fetch("../icon.svg.in").then((res) => res.text());
+const iconTemplate = await fetch("../icon.svg.in")
+	.then((res) => {
+		if (!res.ok) {
+			throw new Error(`${res.status} ${res.statusText}`);
+		}
+		return res.text();
+	})
+	.catch((error) => {
+		alert(`Failed to load ../icon.svg.in: ${error.message}`);
+		throw error;
+	});
 const iconAreas = new Set(
 	[...iconTemplate.matchAll(PLACEHOLDER_PATTERN)].map(([, area]) => area),
 );
@@ -21,7 +31,8 @@ iconAreas.forEach((area) => {
 	const { h, s, l, color: colorOutput } = colorPicker.elements;
 
 	const update = () => {
-		const color = `hsl(${h.value} ${s.value}% ${l.value})`;
+		// colors.json にそのまま貼れるよう、resvg も解釈できるカンマ区切りの書式にする
+		const color = `hsl(${h.value}, ${s.value}%, ${l.value}%)`;
 		document.body.style.setProperty(`--${area}-color`, color);
 		colorPicker.style.setProperty("--color", color);
 		colorOutput.value = color;

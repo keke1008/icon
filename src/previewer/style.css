@@ -125,17 +125,12 @@ body {
 	height: calc(var(--thumb-height) + var(--thumb-border-width) * 2);
 	margin: 5px 0;
 	background-color: transparent;
+	appearance: none;
 }
 
-.color-slider::-moz-range-track {
-	background-size: var(--track-width) 100%;
-	background-repeat: no-repeat;
-	background-position: center;
-	height: var(--track-height);
-}
-
-.color-slider[name="h"]::-moz-range-track {
-	background-image: linear-gradient(
+/* ::-moz-* と ::-webkit-* は同じセレクタリストに書けないため、グラデーションは変数経由で共有する */
+.color-slider[name="h"] {
+	--track-gradient: linear-gradient(
 		to right in hsl,
 		hsl(from var(--color) 0deg s l),
 		hsl(from var(--color) 180deg s l) 50%,
@@ -143,20 +138,30 @@ body {
 	);
 }
 
-.color-slider[name="s"]::-moz-range-track {
-	background-image: linear-gradient(
+.color-slider[name="s"] {
+	--track-gradient: linear-gradient(
 		to right in hsl,
 		hsl(from var(--color) h 0 l),
 		hsl(from var(--color) h 100 l)
 	);
 }
 
-.color-slider[name="l"]::-moz-range-track {
-	background-image: linear-gradient(
+.color-slider[name="l"] {
+	--track-gradient: linear-gradient(
 		to right in hsl,
 		hsl(from var(--color) h s 0),
 		hsl(from var(--color) h s 100)
 	);
+}
+
+.color-slider::-moz-range-track {
+	height: var(--track-height);
+	background: var(--track-gradient) center / var(--track-width) 100% no-repeat;
+}
+
+.color-slider::-webkit-slider-runnable-track {
+	height: var(--track-height);
+	background: var(--track-gradient) center / var(--track-width) 100% no-repeat;
 }
 
 .color-slider::-moz-range-thumb {
@@ -165,6 +170,19 @@ body {
 	background-color: transparent;
 	border: solid white var(--thumb-border-width);
 	border-radius: 9999px;
+}
+
+.color-slider::-webkit-slider-thumb {
+	/* トラックの中央に揃える */
+	margin-top: calc(
+		(var(--track-height) - var(--thumb-height)) / 2 - var(--thumb-border-width)
+	);
+	width: var(--thumb-width);
+	height: var(--thumb-height);
+	background-color: transparent;
+	border: solid white var(--thumb-border-width);
+	border-radius: 9999px;
+	appearance: none;
 }
 
 .color-picker-output {
