@@ -1,5 +1,6 @@
 const PLACEHOLDER_PATTERN = /@(\w+)@/g;
 const PREVIEW_SIZES = [16, 24, 32, 48, 64, 128];
+const SAVED_COLORS_KEY = "icon-previewer:colors";
 
 const fetchFile = (path, parse) =>
 	fetch(path)
@@ -69,6 +70,21 @@ Object.entries(presetColors).forEach(([name, colors]) => {
 	colorPresets.append(item);
 });
 
+// 直前に入力した色をリロード後も復元できるよう、エリアごとのスライダー値を保存する
+// localStorage が使えない環境でも動くよう、読み書きの失敗は無視する
+const savedColors = (() => {
+	try {
+		return JSON.parse(localStorage.getItem(SAVED_COLORS_KEY)) ?? {};
+	} catch {
+		return {};
+	}
+})();
+const saveColors = () => {
+	try {
+		localStorage.setItem(SAVED_COLORS_KEY, JSON.stringify(savedColors));
+	} catch {}
+};
+
 const colorPickers = document.querySelector(".color-pickers");
 
 iconAreas.forEach((area) => {
@@ -77,6 +93,9 @@ iconAreas.forEach((area) => {
 
 	const { elements } = colorPicker;
 	const sliders = [elements.h, elements.s, elements.l];
+	sliders.forEach((slider) => {
+		slider.value = savedColors[area]?.[slider.name] ?? slider.value;
+	});
 
 	const update = () => {
 		const [h, s, l] = sliders.map((slider) => slider.value);
@@ -90,6 +109,13 @@ iconAreas.forEach((area) => {
 		});
 	};
 	colorPicker.addEventListener("input", update);
+	// ドラッグ中の input ごとではなく、値が確定した change のときだけ保存する
+	colorPicker.addEventListener("change", () => {
+		savedColors[area] = Object.fromEntries(
+			sliders.map((slider) => [slider.name, slider.value]),
+		);
+		saveColors();
+	});
 	update();
 
 	colorPickers.append(colorPicker);
