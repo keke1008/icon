@@ -23,56 +23,32 @@
                 </figure>
             </section>
 
-            <section class="color-pickers">
-                <form class="color-picker" data-icon-area="outer">
-                    <fieldset class="color-slider-group">
-                        <legend class="color-picker-title">
-                            <span class="color-swatch"></span>Outer
-                        </legend>
-                        <label class="color-slider-row">
-                            <span class="color-slider-label">H</span>
-                            <input type="range" name="h" class="color-slider" min="0" max="359">
-                            <output class="color-slider-value"></output>
-                        </label>
-                        <label class="color-slider-row">
-                            <span class="color-slider-label">S</span>
-                            <input type="range" name="s" class="color-slider" min="0" max="100">
-                            <output class="color-slider-value"></output>
-                        </label>
-                        <label class="color-slider-row">
-                            <span class="color-slider-label">L</span>
-                            <input type="range" name="l" class="color-slider" min="0" max="100">
-                            <output class="color-slider-value"></output>
-                        </label>
-                        <output name="color" class="color-picker-output"></output>
-                    </fieldset>
-                </form>
-
-                <form class="color-picker" data-icon-area="inner">
-                    <fieldset class="color-slider-group">
-                        <legend class="color-picker-title">
-                            <span class="color-swatch"></span>Inner
-                        </legend>
-                        <label class="color-slider-row">
-                            <span class="color-slider-label">H</span>
-                            <input type="range" name="h" class="color-slider" min="0" max="359">
-                            <output class="color-slider-value"></output>
-                        </label>
-                        <label class="color-slider-row">
-                            <span class="color-slider-label">S</span>
-                            <input type="range" name="s" class="color-slider" min="0" max="100">
-                            <output class="color-slider-value"></output>
-                        </label>
-                        <label class="color-slider-row">
-                            <span class="color-slider-label">L</span>
-                            <input type="range" name="l" class="color-slider" min="0" max="100">
-                            <output class="color-slider-value"></output>
-                        </label>
-                        <output name="color" class="color-picker-output"></output>
-                    </fieldset>
-                </form>
-            </section>
+            <section class="color-pickers"></section>
         </main>
+
+        <template id="color-picker-template">
+            <form class="color-picker">
+                <div class="color-picker-title">
+                    <span class="color-swatch"></span><span class="color-picker-name"></span>
+                </div>
+                <label class="color-slider-row">
+                    <span class="color-slider-label">H</span>
+                    <input type="range" name="h" class="color-slider" min="0" max="359">
+                    <output class="color-slider-value"></output>
+                </label>
+                <label class="color-slider-row">
+                    <span class="color-slider-label">S</span>
+                    <input type="range" name="s" class="color-slider" min="0" max="100">
+                    <output class="color-slider-value"></output>
+                </label>
+                <label class="color-slider-row">
+                    <span class="color-slider-label">L</span>
+                    <input type="range" name="l" class="color-slider" min="0" max="100">
+                    <output class="color-slider-value"></output>
+                </label>
+                <output name="color" class="color-picker-output"></output>
+            </form>
+        </template>
 
         <script src="script.js"></script>
     </body>

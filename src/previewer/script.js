@@ -4,7 +4,15 @@ const MID_COLOR = "#101010";
 const MID_MARGIN = 5;
 const INNER_MARGIN = 8;
 
-const iconColors = { outer: "none", inner: "none" };
+const ICON_AREAS = [
+	{ area: "outer", name: "Outer" },
+	{ area: "inner", name: "Inner" },
+];
+
+const iconColors = {};
+const iconContexts = [...document.querySelectorAll("canvas.preview-icon")].map(
+	(canvas) => canvas.getContext("2d"),
+);
 
 const drawSquareCentered = (ctx, margin, color) => {
 	ctx.fillStyle = color;
@@ -12,33 +20,38 @@ const drawSquareCentered = (ctx, margin, color) => {
 };
 
 const drawIcons = () => {
-	document.querySelectorAll("canvas.preview-icon").forEach((canvas) => {
-		const ctx = canvas.getContext("2d");
+	iconContexts.forEach((ctx) => {
 		drawSquareCentered(ctx, 0, iconColors.outer);
 		drawSquareCentered(ctx, MID_MARGIN, MID_COLOR);
 		drawSquareCentered(ctx, INNER_MARGIN, iconColors.inner);
 	});
 };
 
-const setIconColor = (iconArea, color) => {
-	iconColors[iconArea] = color;
-	document.body.style.setProperty(`--${iconArea}-color`, color);
-	drawIcons();
-};
+const colorPickers = document.querySelector(".color-pickers");
+const colorPickerTemplate = document.getElementById("color-picker-template");
 
-const colorPickers = document.querySelectorAll("form.color-picker");
-colorPickers.forEach((colorPicker) => {
+ICON_AREAS.forEach(({ area, name }) => {
+	const fragment = colorPickerTemplate.content.cloneNode(true);
+	const colorPicker = fragment.querySelector("form");
+	fragment.querySelector(".color-picker-name").textContent = name;
+
 	const { h, s, l, color: colorOutput } = colorPicker.elements;
-	const sliders = colorPicker.querySelectorAll(".color-slider");
 
 	const update = () => {
 		const color = `hsl(${h.value} ${s.value}% ${l.value})`;
-		setIconColor(colorPicker.dataset.iconArea, color);
+		iconColors[area] = color;
+		colorPicker.style.setProperty("--color", color);
 		colorOutput.value = color;
-		sliders.forEach((slider) => {
+		[h, s, l].forEach((slider) => {
 			slider.nextElementSibling.value = slider.value;
 		});
 	};
-	colorPicker.addEventListener("input", update);
+	colorPicker.addEventListener("input", () => {
+		update();
+		drawIcons();
+	});
 	update();
+
+	colorPickers.append(fragment);
 });
+drawIcons();

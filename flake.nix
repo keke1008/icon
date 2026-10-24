@@ -6,7 +6,7 @@
     let
       eachSystem =
         let
-          mkSystemArgs = system: pkgs: rec {
+          mkSystemArgs = system: pkgs: {
             inherit system pkgs;
             python = pkgs.python3.withPackages (ps: [ ps.pillow ]);
           };
@@ -25,7 +25,7 @@
 
           previewer = pkgs.writeShellApplication {
             name = "icon-previewer";
-            runtimeInputs = [ python ];
+            runtimeInputs = [ pkgs.python3 ];
             text = "python -m http.server -d ${./src/previewer}";
           };
         }
