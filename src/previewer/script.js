@@ -1,4 +1,27 @@
 const PLACEHOLDER_PATTERN = /@(\w+)@/g;
+const PREVIEW_SIZES = [16, 24, 32, 48, 64, 128];
+
+const iconPairTemplate = document.getElementById("icon-pair-template");
+const createIconPair = () => iconPairTemplate.content.cloneNode(true);
+
+document.querySelectorAll(".preview-background").forEach((background) => {
+	background.append(createIconPair());
+});
+
+document.querySelectorAll(".size-preview").forEach((sizePreview) => {
+	PREVIEW_SIZES.forEach((size) => {
+		const item = document.createElement("figure");
+		item.className = "size-preview-item";
+		item.style.setProperty("--icon-size", `${size}px`);
+
+		const caption = document.createElement("figcaption");
+		caption.className = "preview-caption";
+		caption.textContent = `${size}px`;
+
+		item.append(createIconPair(), caption);
+		sizePreview.append(item);
+	});
+});
 
 // テンプレートの @area@ を CSS 変数に置き換えて埋め込み、以降は CSS 変数の更新だけで色を変える
 const iconTemplate = await fetch("../icon.svg.in")

@@ -23,20 +23,23 @@ body {
 }
 
 .layout {
-	min-height: 100vh;
+	--layout-padding: 24px;
+
+	min-height: 100dvh;
 	box-sizing: border-box;
-	padding: 24px;
+	padding: var(--layout-padding);
 	gap: 24px;
 
 	display: grid;
-	grid-template-columns: minmax(0, 1fr) 360px;
+	grid-template-columns: minmax(0, 1fr);
 	align-items: start;
 }
 
-@media (max-width: 800px) {
-	.layout {
-		grid-template-columns: minmax(0, 1fr);
-	}
+.preview-column {
+	gap: 16px;
+
+	display: flex;
+	flex-direction: column;
 }
 
 .previews {
@@ -46,12 +49,51 @@ body {
 	grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.preview {
-	margin: 0;
+.preview-background {
+	/* 四角と丸を横に並べ、2 つ分 + gap の幅が背景の 84% になるようにする */
+	--icon-gap: 8cqw;
+	--icon-width: min((84cqw - var(--icon-gap)) / 2, 50cqh);
+
+	aspect-ratio: 1 / 1;
+	container-type: size;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
-.preview-background {
-	padding: 25%;
+.preview-background .icon-pair {
+	gap: var(--icon-gap);
+}
+
+.preview-background .preview-icon {
+	width: var(--icon-width);
+}
+
+/* 幅に余裕がある場合は 2 カラムにし、プレビュー列を画面の高さに収める */
+@media (min-width: 801px) {
+	.layout {
+		grid-template-columns: minmax(0, 1fr) 360px;
+	}
+
+	.preview-column {
+		/* 大きいプレビューはサイズ一覧の残りの高さに合わせて縮める */
+		height: calc(100dvh - var(--layout-padding) * 2);
+	}
+
+	.previews {
+		flex: 1;
+		/* 画面が極端に低くても大きいプレビューが潰れきらないようにする */
+		min-height: 160px;
+	}
+
+	.preview-background {
+		aspect-ratio: auto;
+	}
+}
+
+.preview-background,
+.size-preview {
 	border-radius: 8px;
 }
 
@@ -64,14 +106,56 @@ body {
 }
 
 .preview-caption {
-	margin-top: 8px;
 	text-align: center;
+	font-size: 12px;
 	color: var(--muted-text-color);
+}
+
+.icon-pair {
+	display: flex;
 }
 
 .preview-icon svg {
 	display: block;
 	width: 100%;
+}
+
+.preview-icon-round {
+	border-radius: 50%;
+	overflow: hidden;
+}
+
+.size-previews {
+	gap: 16px;
+
+	display: flex;
+	flex-direction: column;
+}
+
+.size-preview {
+	padding: 16px 24px;
+	gap: 16px;
+
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-end;
+}
+
+.size-preview-item {
+	margin: 0;
+	gap: 8px;
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.size-preview-item .icon-pair {
+	gap: 8px;
+}
+
+.size-preview-item .preview-icon {
+	width: var(--icon-size);
 }
 
 .color-pickers {

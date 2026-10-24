@@ -8,23 +8,27 @@
     </head>
     <body>
         <main class="layout">
-            <section class="previews">
-                <figure class="preview">
-                    <div class="preview-background preview-light-mode">
-                        <div class="preview-icon"></div>
-                    </div>
-                    <figcaption class="preview-caption">Light</figcaption>
-                </figure>
-                <figure class="preview">
-                    <div class="preview-background preview-dark-mode">
-                        <div class="preview-icon"></div>
-                    </div>
-                    <figcaption class="preview-caption">Dark</figcaption>
-                </figure>
-            </section>
+            <div class="preview-column">
+                <section class="previews">
+                    <div class="preview-background preview-light-mode"></div>
+                    <div class="preview-background preview-dark-mode"></div>
+                </section>
+
+                <section class="size-previews">
+                    <div class="size-preview preview-light-mode"></div>
+                    <div class="size-preview preview-dark-mode"></div>
+                </section>
+            </div>
 
             <section class="color-pickers"></section>
         </main>
+
+        <template id="icon-pair-template">
+            <div class="icon-pair">
+                <div class="preview-icon"></div>
+                <div class="preview-icon preview-icon-round"></div>
+            </div>
+        </template>
 
         <template id="color-picker-template">
             <form class="color-picker">
