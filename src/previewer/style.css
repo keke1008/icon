@@ -1,0 +1,196 @@
+body {
+	--outer-color: none;
+	--inner-color: none;
+
+	--page-background-color: #2a2a2a;
+	--panel-background-color: #333333;
+	--muted-text-color: #999999;
+
+	--thumb-width: 10px;
+	--thumb-height: 1.5rem;
+	--thumb-border-width: 3px;
+
+	--track-width: calc(
+		100% -
+		var(--thumb-width) -
+		var(--thumb-border-width) *
+		2
+	);
+	--track-height: 1rem;
+	--track-border-width: 2px;
+
+	margin: 0;
+	font-family: monospace;
+	color: #eeeeee;
+	font-size: 16px;
+	background-color: var(--page-background-color);
+}
+
+.layout {
+	min-height: 100vh;
+	box-sizing: border-box;
+	padding: 24px;
+	gap: 24px;
+
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 360px;
+	align-items: start;
+}
+
+@media (max-width: 800px) {
+	.layout {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+.previews {
+	gap: 16px;
+
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.preview {
+	margin: 0;
+}
+
+.preview-background {
+	/* .preview-icon の margin が外側に相殺されないようにする */
+	display: flow-root;
+	border-radius: 8px;
+}
+
+.preview-background.preview-light-mode {
+	background-color: #eeeeee;
+}
+
+.preview-background.preview-dark-mode {
+	background-color: #111111;
+}
+
+.preview-caption {
+	margin-top: 8px;
+	text-align: center;
+	color: var(--muted-text-color);
+}
+
+.preview-icon {
+	display: block;
+	margin: 25%;
+	width: 50%;
+	aspect-ratio: 1 / 1;
+	/* 32x32 の canvas を拡大するため、補間せずにピクセルをそのまま拡大する */
+	image-rendering: pixelated;
+}
+
+.color-pickers {
+	gap: 16px;
+
+	display: flex;
+	flex-direction: column;
+}
+
+.color-picker[data-icon-area="outer"] {
+	--color: var(--outer-color);
+}
+
+.color-picker[data-icon-area="inner"] {
+	--color: var(--inner-color);
+}
+
+.color-slider-group {
+	margin: 0;
+	padding: 12px 16px 16px;
+	border: none;
+	border-radius: 8px;
+	background-color: var(--panel-background-color);
+}
+
+.color-picker-title {
+	/* legend は fieldset の枠線上に配置されるため、float で通常のフローに戻す */
+	float: left;
+	width: 100%;
+	margin-bottom: 8px;
+	gap: 8px;
+
+	display: flex;
+	align-items: center;
+	font-weight: bold;
+}
+
+.color-swatch {
+	width: 1rem;
+	height: 1rem;
+	border-radius: 4px;
+	background-color: var(--color);
+}
+
+.color-slider-row {
+	gap: 8px;
+
+	display: grid;
+	grid-template-columns: 1.5ch minmax(0, 1fr) 3ch;
+	align-items: center;
+}
+
+.color-slider-label {
+	color: var(--muted-text-color);
+}
+
+.color-slider-value {
+	text-align: right;
+}
+
+.color-slider {
+	width: 100%;
+	height: calc(var(--thumb-height) + var(--thumb-border-width) * 2);
+	margin: 5px 0;
+	background-color: transparent;
+}
+
+.color-slider::-moz-range-track {
+	background-size: var(--track-width) 100%;
+	background-repeat: no-repeat;
+	background-position: center;
+	height: var(--track-height);
+}
+
+.color-slider[name="h"]::-moz-range-track {
+	background-image: linear-gradient(
+		to right in hsl,
+		hsl(from var(--color) 0deg s l),
+		hsl(from var(--color) 180deg s l) 50%,
+		hsl(from var(--color) 359deg s l)
+	);
+}
+
+.color-slider[name="s"]::-moz-range-track {
+	background-image: linear-gradient(
+		to right in hsl,
+		hsl(from var(--color) h 0 l),
+		hsl(from var(--color) h 100 l)
+	);
+}
+
+.color-slider[name="l"]::-moz-range-track {
+	background-image: linear-gradient(
+		to right in hsl,
+		hsl(from var(--color) h s 0),
+		hsl(from var(--color) h s 100)
+	);
+}
+
+.color-slider::-moz-range-thumb {
+	width: var(--thumb-width);
+	height: var(--thumb-height);
+	background-color: transparent;
+	border: solid white var(--thumb-border-width);
+	border-radius: 9999px;
+}
+
+.color-picker-output {
+	display: block;
+	margin-top: 8px;
+	text-align: center;
+	color: var(--muted-text-color);
+}

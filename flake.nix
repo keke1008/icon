@@ -6,7 +6,7 @@
     let
       eachSystem =
         let
-          mkSystemArgs = system: pkgs: {
+          mkSystemArgs = system: pkgs: rec {
             inherit system pkgs;
             python = pkgs.python3.withPackages (ps: [ ps.pillow ]);
           };
@@ -16,11 +16,18 @@
     in
     {
       packages = eachSystem (
-        { pkgs, python, ... }: {
+        { pkgs, python, ... }:
+        {
           default = pkgs.runCommand "icons" { nativeBuildInputs = [ python ]; } ''
             mkdir -p $out
             python ${./src/main.py} $out
           '';
+
+          previewer = pkgs.writeShellApplication {
+            name = "icon-previewer";
+            runtimeInputs = [ python ];
+            text = "python -m http.server -d ${./src/previewer}";
+          };
         }
       );
 
@@ -44,6 +51,9 @@
               python
               ruff
               pyright
+              typescript
+              typescript-language-server
+              biome
             ];
           };
         }

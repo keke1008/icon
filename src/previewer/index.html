@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Icon previewer</title>
+        <link href="style.css" rel="stylesheet">
+    </head>
+    <body>
+        <main class="layout">
+            <section class="previews">
+                <figure class="preview">
+                    <div class="preview-background preview-light-mode">
+                        <canvas class="preview-icon" width="32" height="32"></canvas>
+                    </div>
+                    <figcaption class="preview-caption">Light</figcaption>
+                </figure>
+                <figure class="preview">
+                    <div class="preview-background preview-dark-mode">
+                        <canvas class="preview-icon" width="32" height="32"></canvas>
+                    </div>
+                    <figcaption class="preview-caption">Dark</figcaption>
+                </figure>
+            </section>
+
+            <section class="color-pickers">
+                <form class="color-picker" data-icon-area="outer">
+                    <fieldset class="color-slider-group">
+                        <legend class="color-picker-title">
+                            <span class="color-swatch"></span>Outer
+                        </legend>
+                        <label class="color-slider-row">
+                            <span class="color-slider-label">H</span>
+                            <input type="range" name="h" class="color-slider" min="0" max="359">
+                            <output class="color-slider-value"></output>
+                        </label>
+                        <label class="color-slider-row">
+                            <span class="color-slider-label">S</span>
+                            <input type="range" name="s" class="color-slider" min="0" max="100">
+                            <output class="color-slider-value"></output>
+                        </label>
+                        <label class="color-slider-row">
+                            <span class="color-slider-label">L</span>
+                            <input type="range" name="l" class="color-slider" min="0" max="100">
+                            <output class="color-slider-value"></output>
+                        </label>
+                        <output name="color" class="color-picker-output"></output>
+                    </fieldset>
+                </form>
+
+                <form class="color-picker" data-icon-area="inner">
+                    <fieldset class="color-slider-group">
+                        <legend class="color-picker-title">
+                            <span class="color-swatch"></span>Inner
+                        </legend>
+                        <label class="color-slider-row">
+                            <span class="color-slider-label">H</span>
+                            <input type="range" name="h" class="color-slider" min="0" max="359">
+                            <output class="color-slider-value"></output>
+                        </label>
+                        <label class="color-slider-row">
+                            <span class="color-slider-label">S</span>
+                            <input type="range" name="s" class="color-slider" min="0" max="100">
+                            <output class="color-slider-value"></output>
+                        </label>
+                        <label class="color-slider-row">
+                            <span class="color-slider-label">L</span>
+                            <input type="range" name="l" class="color-slider" min="0" max="100">
+                            <output class="color-slider-value"></output>
+                        </label>
+                        <output name="color" class="color-picker-output"></output>
+                    </fieldset>
+                </form>
+            </section>
+        </main>
+
+        <script src="script.js"></script>
+    </body>
+</html>

@@ -22,6 +22,7 @@ COLORS = {
     "green": IconColor(outer="#3fCB44", inner="#60FFA5"),
     "red": IconColor(outer="#D8152F", inner="#FF6767"),
     "blue": IconColor(outer="#0076FF", inner="#00BFFF"),
+    "violet": IconColor(outer="hsl(273, 95%, 47%)", inner="hsl(262, 74%, 64%)"),
 }
 
 
