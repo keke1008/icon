@@ -69,11 +69,9 @@ body {
 	color: var(--muted-text-color);
 }
 
-.preview-icon {
+.preview-icon svg {
 	display: block;
 	width: 100%;
-	/* 32x32 の canvas を拡大するため、補間せずにピクセルをそのまま拡大する */
-	image-rendering: pixelated;
 }
 
 .color-pickers {
@@ -96,6 +94,7 @@ body {
 	display: flex;
 	align-items: center;
 	font-weight: bold;
+	text-transform: capitalize;
 }
 
 .color-swatch {

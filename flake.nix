@@ -4,29 +4,44 @@
   outputs =
     { self, nixpkgs }:
     let
-      eachSystem =
-        let
-          mkSystemArgs = system: pkgs: {
-            inherit system pkgs;
-            python = pkgs.python3.withPackages (ps: [ ps.pillow ]);
-          };
-          systemArgs = builtins.mapAttrs mkSystemArgs nixpkgs.legacyPackages;
-        in
-        f: builtins.mapAttrs (_: f) systemArgs;
+      eachSystem = f: builtins.mapAttrs (system: pkgs: f { inherit system pkgs; }) nixpkgs.legacyPackages;
     in
     {
       packages = eachSystem (
-        { pkgs, python, ... }:
+        { pkgs, ... }:
+        let
+          inherit (pkgs) lib;
+          iconSize = "256";
+          colors = lib.importJSON ./src/colors.json;
+          renderIcon = name: color: ''
+            resvg -w ${iconSize} -h ${iconSize} \
+              ${pkgs.replaceVars ./src/icon.svg.in color} \
+              $out/icon-${name}-${iconSize}.png
+          '';
+
+          # previewer/ から ../icon.svg.in を参照するため、src/ と同じ配置で配信する
+          previewerRoot = lib.fileset.toSource {
+            root = ./src;
+            fileset = lib.fileset.unions [
+              ./src/previewer
+              ./src/icon.svg.in
+            ];
+          };
+          previewerPort = "8000";
+        in
         {
-          default = pkgs.runCommand "icons" { nativeBuildInputs = [ python ]; } ''
+          default = pkgs.runCommand "icons" { nativeBuildInputs = [ pkgs.resvg ]; } ''
             mkdir -p $out
-            python ${./src/main.py} $out
+            ${lib.concatMapAttrsStringSep "\n" renderIcon colors}
           '';
 
           previewer = pkgs.writeShellApplication {
             name = "icon-previewer";
             runtimeInputs = [ pkgs.python3 ];
-            text = "python -m http.server -d ${./src/previewer}";
+            text = ''
+              echo "Previewer: http://localhost:${previewerPort}/previewer/"
+              python -m http.server ${previewerPort} -d ${previewerRoot}
+            '';
           };
         }
       );
@@ -45,12 +60,11 @@
       );
 
       devShells = eachSystem (
-        { pkgs, python, ... }: {
+        { pkgs, ... }: {
           default = pkgs.mkShell {
             packages = with pkgs; [
-              python
-              ruff
-              pyright
+              python3
+              resvg
               typescript
               typescript-language-server
               biome
