@@ -2,5 +2,6 @@
 	"green": { "outer": "#3FCB44", "inner": "#60FFA5" },
 	"red": { "outer": "#D8152F", "inner": "#FF6767" },
 	"blue": { "outer": "#0076FF", "inner": "#00BFFF" },
-	"violet": { "outer": "hsl(268, 100%, 45%)", "inner": "hsl(254, 92%, 71%)" }
+	"violet": { "outer": "hsl(268, 100%, 45%)", "inner": "hsl(254, 92%, 71%)" },
+	"halloween": { "outer": "hsl(255, 37%, 37%)", "inner": "hsl(26, 100%, 59%)" }
 }
